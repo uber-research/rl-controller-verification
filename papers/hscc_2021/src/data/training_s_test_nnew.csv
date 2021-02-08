@@ -1,0 +1,3 @@
+algo,OK rising t.,OK off.,OK overshoot,avg rising t.,avg off.,avg overshoot,max rising t.,max off.,max overshoot
+sac,95.35,95.42,97.47,0.09,0.66,0.34,0.22,9.35,5.30
+ddpg,94.21,95.17,94.69,0.09,0.83,0.80,0.21,11.29,10.51

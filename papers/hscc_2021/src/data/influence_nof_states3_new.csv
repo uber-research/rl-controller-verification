@@ -1,0 +1,4 @@
+algo,dim,OK rising t.,OK off.,OK overshoot,avg rising t.,avg off.,avg overshoot,max rising t.,max off.,max overshoot
+sac,3,98.88,98.01,98.58,0.09,0.28,0.18,0.19,5.01,3.28
+sac,6,97.24,98.70,94.82,0.09,0.25,0.81,0.19,4.72,8.07
+sac,7,94.26,94.57,97.79,0.09,0.80,0.33,0.25,11.56,5.75

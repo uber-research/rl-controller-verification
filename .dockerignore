@@ -1,0 +1,13 @@
+.jenkins/
+docker/
+results/
+architectures/
+gym-quadcopter/
+Makefile
+model/
+modules/
+NN_files/
+run/
+training/
+utils/
+bazel-*/

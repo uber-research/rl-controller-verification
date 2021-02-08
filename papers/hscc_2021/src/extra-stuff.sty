@@ -1,0 +1,56 @@
+% the stuff we prefer to hide
+\usepackage[utf8]{inputenc}
+
+\usepackage{siunitx}
+\sisetup{
+    inter-unit-product=\ensuremath{\cdot},
+}
+
+\setlength{\marginparwidth}{1.4cm}
+\usepackage[textwidth=1.5cm,disable]{todonotes}
+\setuptodonotes{size=\scriptsize, color=blue!30}
+
+\usepackage{caption}
+\usepackage{subcaption}
+
+\usepackage{cleveref}
+\usepackage{nicefrac}
+\usepackage{epsfig}
+\usepackage{booktabs}
+
+\newcommand\ForAuthors[1]%          %  temporary remark for the
+ {\par\smallskip                     %  authors:
+  \begin{center}%                    %
+   \fbox%                            %    --------
+   {\parbox{0.9\linewidth}%          %    |  #1  |
+    {\raggedright\sc--- #1}%         %    --------
+   }%                                %
+  \end{center}%                      %
+  \par\smallskip                     %
+ }
+
+
+\usepackage{mathtools}
+
+\newcommand{\pmat}[1]{\begin{pmatrix}#1\end{pmatrix}}
+\newcommand{\dt}{\,\mathrm{d}t}
+
+\usepackage{csvsimple}
+\newcommand\atcpcsv[1]{%
+\def\csvdir{}
+\IfFileExists{data/#1}{\def\csvdir{data/}}{}
+\csvloop{autobooktabular={\csvdir#1}}
+}
+\newenvironment{csvtable*}[2][]{%
+\begin{table*}[#1]%
+\atcpcsv{#2}%
+}{%
+\end{table*}
+}
+
+\newenvironment{csvtable}[2]{%
+\begin{table}[#1]%
+\atcpcsv{#2}
+}{%
+\end{table}
+}

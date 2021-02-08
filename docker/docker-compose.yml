@@ -1,0 +1,42 @@
+version: '2.3'
+
+services:
+
+    base:
+        image: brzl/quadcopter:base
+        build:
+            context: ../third_party/brezel
+            dockerfile: docker/devel/Dockerfile
+            args:
+                - WITH_DOCKER=true
+                - WITH_DOCKER_GCR=true
+                - WITH_KUBECTL=true
+                - WITH_GSUTIL=true
+                - WITH_LINTERS=true
+
+    brezel:
+        image: brzl/quadcopter:devel
+        build:
+            context: ..
+            dockerfile: docker/Dockerfile
+        working_dir: /quadcopter
+        cap_add:
+            - SYS_PTRACE
+        security_opt:
+            - seccomp:unconfined
+        volumes:
+            - ..:/quadcopter:cached
+            - ${HOME}/.gitconfig:/home/ubrzl/.gitconfig:ro
+            - /var/run/docker.sock:/var/run/docker.sock
+            - bazel-cache:/var/cache/bazel:delegated
+            - bazel-repo-cache:/var/cache/bazel/repo:delegated
+            - ${RESULTS_VOLUME:-../results}:/results
+            - ${CHECKPOINTS_VOLUME:-../results/checkpoints}:/checkpoints
+
+volumes:
+    bazel-cache:
+        name: brzl-bazel-cache
+    bazel-repo-cache:
+        name: brzl-bazel-repo-cache
+    results:
+    checkpoints:

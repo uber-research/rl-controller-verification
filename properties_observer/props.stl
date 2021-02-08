@@ -1,0 +1,178 @@
+
+/** Single tupled definition that regroups all properties. */
+def allProps(
+       tt                 : Real; // the time steps signal s(t) = t
+        x                 : Real; // the angular rate signal
+        q                 : Real; // the angular rate query signal
+  const tset              : Real; // settling time
+  const tstab             : Real; // stable plateau time for query
+  const q_lh              : Real; // negative lookahead used for computing the query step size
+  const q_diam            : Real; // stability envelope for the query
+  const offset_pct        : Real; // maximum tolerated step-relative error percentage on [tset, tstab]
+  const overshoot_pct     : Real; // maximum tolerated step-relative percentage error on [0.0, tstep]
+  const time_to_reach_pct : Real; // percentage of query to reach for measuring rising time.
+):(
+  Boolean,
+  Real,
+  Boolean,
+  Real,
+  Boolean,
+  Real,
+  Real,
+) = (
+  stableRising(q, tstab, q_lh, q_diam),
+  stepSize    (q, tstab, q_lh, q_diam),
+
+  offset     (x, q, tset, tstab, q_lh, q_diam, offset_pct),
+  offsetValue(x, q, tset, tstab, q_lh, q_diam, offset_pct),
+
+  overshoot      (x, q, tset, tstab, q_lh, q_diam, overshoot_pct),
+  overshootValue (x, q, tset, tstab, q_lh, q_diam, overshoot_pct),
+
+  risingTime (tt, x, q, tstab, q_lh, q_diam, time_to_reach_pct),
+)
+
+/** 
+  * Time for the signal x to reach pct % of the query q on a stable plateau of q. 
+  */
+def risingTime(
+        tt     : Real;
+        x      : Real;
+        q      : Real;
+  const tstab  : Real;
+  const q_lh   : Real;
+  const q_diam : Real;
+  const pct    : Real;
+): Real = 
+  max(-1.0,
+    if   stableRising(q, tstab, q_lh, q_diam) 
+    then (tt U(0.0, tstab, -1.0) (abs(x-q) < pct * abs(q))) - tt
+    else -1.0
+  )
+
+/** 
+  * True at t where Max x - Min x on t + [tmin, tmax] is less than diam. 
+  */
+def stable(
+        x    : Real;
+  const tmin : Real;
+  const tmax : Real;
+  const diam : Real;
+): Boolean = 
+    (On(tmin, tmax) Max x) - (On(tmin, tmax) Min x) < diam
+
+/** 
+  * Assuming lh > 0.0, true at t iff x is stable on [0.0, tstab] and was not stable at t-lh. 
+  */
+def stableRising(
+        x     : Real;
+  const tstab : Real;
+  const lh    : Real; 
+  const diam  : Real;
+): Boolean = 
+  !stable(x, -lh, tstab, diam) & stable(x, 0.0, tstab, diam)
+
+/** 
+  * Assuming 0.0 <= tset <= tstab, true at t where:
+  * - q becomes stable on [0.0, tstab]
+  * - abs max diff between x and q on t + [tset, tstab] is above some pct of the q step size at t
+  */
+def offset(
+        x      : Real;
+        q      : Real;
+  const tset   : Real;
+  const tstab  : Real;
+  const q_lh   : Real;
+  const q_diam : Real;
+  const pct    : Real;
+): Boolean = 
+  stableRising(q, tstab, q_lh, q_diam) &
+    (On(tset, tstab) Max abs(x - q)) > pct * abs(stepSize(q, tstab, q_lh, q_diam))
+ 
+/** 
+  * Abs max diff between x and q on t + [tset, tstab] when q becomes stable, 0.0 else. 
+  */
+def offsetValue(
+        x      : Real;
+        q      : Real;
+  const tset   : Real;
+  const tstab  : Real;
+  const q_lh   : Real;
+  const q_diam : Real;
+  const pct    : Real;
+): Real = 
+  if   offset(x, q, tset, tstab, q_lh, q_diam, pct) 
+  then (On(tset, tstab) Max abs(x - q))
+  else 0.0
+
+/** 
+  * Assuming 0.0 <= tset <= tstab, true at instants t where:
+  * - q becomes stable on t + [0.0, tsab]
+  * - the max abs diff between x and q on t + [0.0, tset] is above pct% of the q step size at t 
+  */
+def overshoot(
+        x      : Real;
+        q      : Real;
+  const tset   : Real;
+  const tstab  : Real;
+  const q_lh   : Real;
+  const q_diam : Real;
+  const pct    : Real;
+): Boolean = 
+  stableRising(q, tstab, q_lh, q_diam) &
+  over(x,q,tset,tstab,q_lh, q_diam) > pct * abs(stepSize(q, tstab, q_lh, q_diam))
+
+
+/** 
+  * Assuming 0.0 <= tset <= tstab, true at instants t where:
+  * - q becomes stable on t + [0.0, tsab]
+  * - the abs max diff between x and q on t + [0.0, tset] is above pct% of the q step size at t 
+  */
+def overshootValue(
+        x      : Real;
+        q      : Real;
+  const tset   : Real;
+  const tstab  : Real;
+  const q_lh   : Real;
+  const q_diam : Real;
+  const pct    : Real;
+): Real = 
+  if   overshoot(x, q, tset, tstab , q_lh, q_diam, pct) 
+  then over(x, q, tset, tstab, q_lh, q_diam) 
+  else 0.0
+
+/** Value of the overshoot of x wrt q on t + [tset, tstab].
+  * Positive when overhoot happens, negative otherwise. 
+  */
+def over(
+        x      : Real;
+        q      : Real;
+  const tset   : Real;
+  const tstab  : Real;
+  const q_lh   : Real;
+  const q_diam : Real
+): Real = 
+  if   (stepSize(q, tstab, q_lh, q_diam) > 0.0)
+  then (On(0.0, tset) Max (x - q)) 
+  else (On(0.0, tset) Max (q - x)) 
+
+/** 
+  * Derivative of x (ie diff between value at t and previous value at t-lh). 
+  */
+def deriv(
+        x  : Real;
+  const lh : Real;
+): Real = x - Lookup(-lh, 0.0) x
+
+/** 
+  * Derivative of x when x has a stable plateau on t + [tmin, tmax], 0.0 otherwise. 
+  */
+def stepSize(
+        x     : Real;
+  const tstab : Real;
+  const lh    : Real;
+  const diam  : Real;
+): Real = 
+  if   stableRising(x, tstab, lh, diam) 
+  then deriv(x, lh) 
+  else 0.0

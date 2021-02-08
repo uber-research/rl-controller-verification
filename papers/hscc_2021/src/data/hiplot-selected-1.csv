@@ -1,0 +1,2 @@
+uid,from_uid,nb_neurons,nb_layers,algo,pid_rates,thrust,p,nof_iterations,offset_all_rel avg,offset_all_rel max,offset_bad count,overshoot_all_rel avg,overshoot_all_rel max,overshoot_bad_rel count,rising_time_all avg,rising_time_all max,rising_time_all count,test_windgust_magnitude_max,test_saturation_motor
+168,,16,2,sac,pid_rates_better,false,false,100000,47.25233540856723,133.92789345994626,22.043771043771045,9.242213597354132,74.40761687502226,2.208754208754209,0.34072663257725416,0.44501683501683786,15.572390572390573,1,1

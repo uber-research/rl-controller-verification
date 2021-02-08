@@ -1,0 +1,7 @@
+mode,algo,OK rising t.,OK off.,OK overshoot,avg rising t.,avg off.,avg overshoot,max rising t.,max off.,max overshoot
+windgust,sac,98.50,97.40,98.48,0.09,0.41,0.22,0.17,6.78,3.81
+windgust,pid2,70.32,0.65,100.00,0.41,20.16,0.00,0.48,24.25,0.00
+windgust,pid1,6.55,2.97,94.28,0.33,60.23,4.43,0.38,146.00,57.65
+saturation,sac,94.20,81.58,92.85,0.12,17.63,6.04,0.33,145.91,81.25
+saturation,pid2,58.24,2.94,93.98,0.39,34.33,4.66,0.48,129.36,58.46
+saturation,pid1,14.50,3.71,92.13,0.30,64.83,5.67,0.40,166.82,70.45

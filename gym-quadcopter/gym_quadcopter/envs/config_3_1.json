@@ -1,0 +1,38 @@
+{
+      "training" : 
+      {
+            "load" : "False", 
+            "step" : 0, 
+            "env" : 2, 
+            "verbose" : "False", 
+            "save_plots" : "False", 
+            "suffix" : "", 
+            "model" : 
+            {
+                  "name" : "ddpg"
+            }, 
+            "n_steps" : 100000, 
+            "activation" : "relu", 
+            "action_noise" : 
+            {
+                  "name" : "OrnsteinUhlenbeck",
+                  "mu" : 0, 
+                  "sigma" : 0.5
+            }, 
+            "plots_dir" : "figures", 
+            "models_dir" : "models"    
+      }, 
+
+      "test" : 
+      {
+            "step" : 1, 
+            "env" : 0, 
+            "suffix" : ".pkl", 
+            "n_episodes" : 10, 
+            "continuous" : "False", 
+            "save_plots" : "False", 
+            "start_index" : 1, 
+            "end_index" : 10, 
+            "plots_dir" : "results" 
+      }
+}
