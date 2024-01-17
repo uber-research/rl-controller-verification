@@ -5,6 +5,10 @@ Learning a Control for Quadcopter with Reinforcement Learning
 Development environment
 -----------------------
 
+> __WARNING__ The Dockerfile on this project uses a base image which has been hijacked.  
+> The Dockerfile has been modified to comment out the hijacked base.  If you wish to use
+> the base image, please do so with caution.
+
 A docker image is provided for the code development: `brzl/quadcopter:devel`.
 The definition of the image can be found inside the folder `docker`. As you
 can see, it is based on the brezel research platform, with additional python

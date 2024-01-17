@@ -1,4 +1,8 @@
-FROM brzl/quadcopter:base
+## WARNING - The base image 'brzl/quadcopter:base' used by this project has been hijacked.  The current base image now conatins malware.
+##           Please use with caution.  If you want to use this base, uncomment the FROM line below.
+##
+## FROM brzl/quadcopter:base
+##
 USER root
 
 # Install extra dependencies
